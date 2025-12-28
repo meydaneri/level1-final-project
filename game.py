@@ -181,11 +181,61 @@ def update(dt):
             swords.pop(i)
             break
 
-    def on_mouse_down(button, pos):
-        global mode
-        if mode == 'menu':
-            if play.collidepoint(pos):
-                mode = 'game'
 
+
+
+def restart_game():
+    global mode, win, enemies, hearts, swords
+
+    mode = "game"
+    win = 0
+
+    # karakteri sıfırla
+    char.topleft = (cell.width, cell.height)
+    char.image = "stand"
+    char.health = 100
+    char.attack = 5
+
+    # bonusları temizle
+    hearts.clear()
+    swords.clear()
+
+    # düşmanları sıfırla
+    enemies.clear()
+    for i in range(5):
+        x = random.randint(1, 7) * cell.width
+        y = random.randint(1, 7) * cell.height
+        e = Actor("my_enemy", topleft=(x, y))
+        e.health = random.randint(10, 20)
+        e.attack = random.randint(5, 10)
+        e.bonus = random.randint(0, 2)
+        enemies.append(e)
+
+# Kazanma ekranı    
+PLAY_X = 120
+PLAY_Y = 310
+PLAY_W = 210
+PLAY_H = 62
+
+# Game Over ekranı
+GO_X = 115
+GO_Y = 390
+GO_W = 220
+GO_H = 62
+
+def on_mouse_down(pos, button):
+    if mode == "end":
+        # Victory ekranında
+        if win == 2:
+            if PLAY_X <= pos[0] <= PLAY_X + PLAY_W and PLAY_Y <= pos[1] <= PLAY_Y + PLAY_H:
+                restart_game()
+
+        # Game Over ekranında
+        else:  # win -1 veya başka bir değer
+            if GO_X <= pos[0] <= GO_X + GO_W and GO_Y <= pos[1] <= GO_Y + GO_H:
+                restart_game()
+
+        
+    
 
 pgzrun.go()
